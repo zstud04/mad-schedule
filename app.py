@@ -4,7 +4,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html', message='Hello World')
+    test_data = {
+        "data1" : "hi",
+        "data2" : 2,
+        "data3" : "testing"
+    }
+    return render_template('index.html', **test_data)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port = 8080)
