@@ -22,6 +22,9 @@ class SeleniumDriver:
     def initElementById(self, id:string):
         return (By.ID, id)
 
+    def initElementByXPath(self, path:string):
+        return (By.XPATH, path)
+
     def initSelectById(self, id:string):
         return Select(self.driver.find_element(By.ID, id))
     
@@ -32,12 +35,24 @@ class SeleniumDriver:
         return WebDriverWait(self.driver, time).until(
             EC.visibility_of_element_located(element)
         )
-    def waitElementInvisibile(self, element, time:int):
+    def waitElementInvisible(self, element, time:int):
         return WebDriverWait(self.driver, time).until(
             EC.invisibility_of_element_located(element)
         )
     def initElementsByClass(self, class_name:string):
-        return self.driver.find_elements(By.CSS_SELECTOR, class_name)
+        return self.driver.find_elements(By.XPATH, class_name)
+
+    def initElementByTag(self, tag_name:string):
+        return self.driver.find_element(By.TAG_NAME, tag_name)
+
+    def findElement(self, select_string:string, select_type, select_time:int=1):
+        return WebDriverWait(self.driver, select_time).until(
+            EC.visibility_of_element_located((select_type, select_string))
+        )
+    
+    def switchToIFrame(self):
+        self.driver.switch_to.default_content()
+    
     
     
     def clickElement(self, element):

@@ -12,33 +12,36 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from utils.selenium_driver import SeleniumDriver as SD
 
+from utils.cse.cse_helper import CSEHelper
+
+from utils.scrape_helper import ScrapeHelper as utils
+
 class CSEScrape:
+    
+
+    sd = SD(CSEHelper.BASE_URL)
+    # el_login_selector= sd.initElementByClass(CSEHelper.login_selector_1)
+    el_search_selector = utils.defer(sd.findElement, CSEHelper.search_selector_1, By.CLASS_NAME, 5)
+    
+    el_login_selector = utils.defer(sd.initElementByClass, CSEHelper.login_selector_1)
+
+    el_course_listings = utils.defer(sd.findElement, CSEHelper.course_listings, By.XPATH, 5)
+
     @staticmethod
     def initDriver():
-        sd = SD('https://enroll.wisc.edu')
+        #sd = SD(CSEHelper.BASE_URL)
         
-        el_login_selector= sd.initElementByClass('btn-primary')
+        el_login_selector = CSEScrape.el_login_selector()
+        CSEScrape.sd.waitElementInvisible(el_login_selector, 30)       
 
-        sd.waitElementInvisibile(el_login_selector, 5)
+        CSEScrape.el_search_selector().click()
 
-        el_search_selector = sd.initElementByClass('mat-raised-button')
+        CSEScrape.el_course_listings().click()
 
-        el_search_action = sd.waitElementVisibile(el_search_selector, 60)
-        
-        el_search_action.click()
+        CSEScrape.sd.waitElementVisibile(el_login_selector, 120)
 
-        el_course_listings = sd.initElementByClass("ng-star-inserted")
-
-        el_course_action = sd.waitElementVisibile(el_course_listings, 1)
-
-        el_course_action.click()
-
-        sd.waitElementVisibile(el_login_selector, 120)
-
-
-        # driver = sd.getDriver()
-        # driver.execute_script("arguments[0].click();", el_search_submit)
         print("done")   
+
 
 
 
