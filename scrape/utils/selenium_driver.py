@@ -16,6 +16,7 @@ class SeleniumDriver:
 
     def __init__(self, base_url):
         self.driver=webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        self.driver.maximize_window()
         val = base_url
         self.driver.get(val)
 
@@ -39,16 +40,22 @@ class SeleniumDriver:
         return WebDriverWait(self.driver, time).until(
             EC.invisibility_of_element_located(element)
         )
-    def initElementsByClass(self, class_name:string):
-        return self.driver.find_elements(By.XPATH, class_name)
 
+    def initElements(self, select_string:string, select_type, time:int=1):
+        WebDriverWait(self.driver, time).until(
+            EC.visibility_of_any_elements_located((select_type, select_string))
+        )
+        return self.driver.find_elements(By.XPATH, select_string)
+    
     def initElementByTag(self, tag_name:string):
         return self.driver.find_element(By.TAG_NAME, tag_name)
 
     def findElement(self, select_string:string, select_type, select_time:int=1):
-        return WebDriverWait(self.driver, select_time).until(
+        WebDriverWait(self.driver, select_time).until(
             EC.visibility_of_element_located((select_type, select_string))
         )
+        return self.driver.find_element(select_type, select_string)
+    
     
     def switchToIFrame(self):
         self.driver.switch_to.default_content()
